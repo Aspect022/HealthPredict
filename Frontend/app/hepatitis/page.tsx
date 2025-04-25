@@ -17,15 +17,15 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
 interface FormData {
   age: string
   sex: string
-  ALB: string
-  CHE: string
-  CHOL: string
-  CREA_log: string
-  BIL_log: string
-  ALT_log: string
-  GGT_log: string
-  AST_log: string
-  ALP_log: string
+  alb: string
+  che: string
+  chol: string
+  crea_log: string
+  bil_log: string
+  alt_log: string
+  ggt_log: string
+  ast_log: string
+  alp_log: string
 }
 
 interface PredictionResult {
@@ -42,15 +42,15 @@ export default function HepatitisPage() {
   const [formData, setFormData] = useState<FormData>({
     age: "",
     sex: "0", // Default to Female
-    ALB: "",
-    CHE: "",
-    CHOL: "",
-    CREA_log: "",
-    BIL_log: "",
-    ALT_log: "",
-    GGT_log: "",
-    AST_log: "",
-    ALP_log: "",
+    alb: "",
+    che: "",
+    chol: "",
+    crea_log: "",
+    bil_log: "",
+    alt_log: "",
+    ggt_log: "",
+    ast_log: "",
+    alp_log: "",
   })
   const [result, setResult] = useState<PredictionResult | null>(null)
   const [summary, setSummary] = useState("")
@@ -65,55 +65,55 @@ export default function HepatitisPage() {
   }
 
   const validateForm = () => {
-    const { age, ALB, CHE, CHOL, CREA_log, BIL_log, ALT_log, GGT_log, AST_log, ALP_log } = formData
+    const { age, alb, che, chol, crea_log, bil_log, alt_log, ggt_log, ast_log, alp_log } = formData
 
     if (!age || isNaN(Number(age)) || Number(age) <= 0 || Number(age) > 120) {
       setError("Please enter a valid age between 1 and 120")
       return false
     }
 
-    if (!ALB || isNaN(Number(ALB))) {
-      setError("Please enter a valid ALB value")
+    if (!alb || isNaN(Number(alb))) {
+      setError("Please enter a valid albumin (ALB) value")
       return false
     }
 
-    if (!CHE || isNaN(Number(CHE))) {
-      setError("Please enter a valid CHE value")
+    if (!che || isNaN(Number(che))) {
+      setError("Please enter a valid cholinesterase (CHE) value")
       return false
     }
 
-    if (!CHOL || isNaN(Number(CHOL))) {
-      setError("Please enter a valid CHOL value")
+    if (!chol || isNaN(Number(chol))) {
+      setError("Please enter a valid cholesterol (CHOL) value")
       return false
     }
 
-    if (!CREA_log || isNaN(Number(CREA_log))) {
-      setError("Please enter a valid CREA_log value")
+    if (!crea_log || isNaN(Number(crea_log))) {
+      setError("Please enter a valid creatinine log (CREA_log) value")
       return false
     }
 
-    if (!BIL_log || isNaN(Number(BIL_log))) {
-      setError("Please enter a valid BIL_log value")
+    if (!bil_log || isNaN(Number(bil_log))) {
+      setError("Please enter a valid bilirubin log (BIL_log) value")
       return false
     }
 
-    if (!ALT_log || isNaN(Number(ALT_log))) {
-      setError("Please enter a valid ALT_log value")
+    if (!alt_log || isNaN(Number(alt_log))) {
+      setError("Please enter a valid ALT log (ALT_log) value")
       return false
     }
 
-    if (!GGT_log || isNaN(Number(GGT_log))) {
-      setError("Please enter a valid GGT_log value")
+    if (!ggt_log || isNaN(Number(ggt_log))) {
+      setError("Please enter a valid GGT log (GGT_log) value")
       return false
     }
 
-    if (!AST_log || isNaN(Number(AST_log))) {
-      setError("Please enter a valid AST_log value")
+    if (!ast_log || isNaN(Number(ast_log))) {
+      setError("Please enter a valid AST log (AST_log) value")
       return false
     }
 
-    if (!ALP_log || isNaN(Number(ALP_log))) {
-      setError("Please enter a valid ALP_log value")
+    if (!alp_log || isNaN(Number(alp_log))) {
+      setError("Please enter a valid ALP log (ALP_log) value")
       return false
     }
 
@@ -126,19 +126,18 @@ export default function HepatitisPage() {
     setIsSummaryLoading(true)
 
     try {
-      const apiData = {
-        age: Number.parseInt(formData.age),
+      const parameters = {
+        age: Number.parseFloat(formData.age),
         sex: Number.parseInt(formData.sex),
-        alb: Number.parseFloat(formData.ALB),  // Changed from ALB to alb
-        che: Number.parseFloat(formData.CHE),  // Changed from CHE to che
-        chol: Number.parseFloat(formData.CHOL),  // Changed from CHOL to chol
-        crea_log: Number.parseFloat(formData.CREA_log),  // Keep lowercase and underscore
-        bil_log: Number.parseFloat(formData.BIL_log),  // Keep lowercase and underscore
-        alt_log: Number.parseFloat(formData.ALT_log),  // Keep lowercase and underscore
-        ggt_log: Number.parseFloat(formData.GGT_log),  // Keep lowercase and underscore
-        ast_log: Number.parseFloat(formData.AST_log),  // Keep lowercase and underscore
-        alp_log: Number.parseFloat(formData.ALP_log),  // Keep lowercase and underscore
-      
+        alb: Number.parseFloat(formData.alb),
+        che: Number.parseFloat(formData.che),
+        chol: Number.parseFloat(formData.chol),
+        crea_log: Number.parseFloat(formData.crea_log),
+        bil_log: Number.parseFloat(formData.bil_log),
+        alt_log: Number.parseFloat(formData.alt_log),
+        ggt_log: Number.parseFloat(formData.ggt_log),
+        ast_log: Number.parseFloat(formData.ast_log),
+        alp_log: Number.parseFloat(formData.alp_log),
       }
 
       const summaryResponse = await fetch("/api/ai-summary", {
@@ -148,7 +147,7 @@ export default function HepatitisPage() {
         },
         body: JSON.stringify({
           disease: "hepatitis",
-          parameters: apiData,
+          parameters,
           prediction: predictionData.prediction,
           probability: predictionData.probability || 0.5,
         }),
@@ -190,17 +189,17 @@ export default function HepatitisPage() {
       }
 
       const apiData = {
-        age: Number.parseFloat(formData.age),
+        age: Number.parseInt(formData.age),
         sex: Number.parseInt(formData.sex),
-        ALB: Number.parseFloat(formData.ALB),
-        CHE: Number.parseFloat(formData.CHE),
-        CHOL: Number.parseFloat(formData.CHOL),
-        CREA_log: Number.parseFloat(formData.CREA_log),
-        BIL_log: Number.parseFloat(formData.BIL_log),
-        ALT_log: Number.parseFloat(formData.ALT_log),
-        GGT_log: Number.parseFloat(formData.GGT_log),
-        AST_log: Number.parseFloat(formData.AST_log),
-        ALP_log: Number.parseFloat(formData.ALP_log),
+        alb: Number.parseFloat(formData.alb),
+        che: Number.parseFloat(formData.che),
+        chol: Number.parseFloat(formData.chol),
+        crea_log: Number.parseFloat(formData.crea_log),
+        bil_log: Number.parseFloat(formData.bil_log),
+        alt_log: Number.parseFloat(formData.alt_log),
+        ggt_log: Number.parseFloat(formData.ggt_log),
+        ast_log: Number.parseFloat(formData.ast_log),
+        alp_log: Number.parseFloat(formData.alp_log),
       }
       console.log("Submitting form with data:", apiData)
 
@@ -291,13 +290,13 @@ export default function HepatitisPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="ALB">ALB (Albumin)</Label>
+                      <Label htmlFor="alb">ALB (Albumin)</Label>
                       <Input
-                        id="ALB"
-                        name="ALB"
+                        id="alb"
+                        name="alb"
                         type="number"
                         placeholder="Enter ALB value"
-                        value={formData.ALB}
+                        value={formData.alb}
                         onChange={handleInputChange}
                         step="0.01"
                         required
@@ -305,13 +304,13 @@ export default function HepatitisPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="CHE">CHE (Cholinesterase)</Label>
+                      <Label htmlFor="che">CHE (Cholinesterase)</Label>
                       <Input
-                        id="CHE"
-                        name="CHE"
+                        id="che"
+                        name="che"
                         type="number"
                         placeholder="Enter CHE value"
-                        value={formData.CHE}
+                        value={formData.che}
                         onChange={handleInputChange}
                         step="0.01"
                         required
@@ -321,13 +320,13 @@ export default function HepatitisPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="CHOL">CHOL (Cholesterol)</Label>
+                      <Label htmlFor="chol">CHOL (Cholesterol)</Label>
                       <Input
-                        id="CHOL"
-                        name="CHOL"
+                        id="chol"
+                        name="chol"
                         type="number"
                         placeholder="Enter CHOL value"
-                        value={formData.CHOL}
+                        value={formData.chol}
                         onChange={handleInputChange}
                         step="0.01"
                         required
@@ -335,13 +334,13 @@ export default function HepatitisPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="CREA_log">CREA_log (Creatinine log)</Label>
+                      <Label htmlFor="crea_log">CREA_log (Creatinine log)</Label>
                       <Input
-                        id="CREA_log"
-                        name="CREA_log"
+                        id="crea_log"
+                        name="crea_log"
                         type="number"
                         placeholder="Enter CREA_log value"
-                        value={formData.CREA_log}
+                        value={formData.crea_log}
                         onChange={handleInputChange}
                         step="0.01"
                         required
@@ -351,13 +350,13 @@ export default function HepatitisPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="BIL_log">BIL_log (Bilirubin log)</Label>
+                      <Label htmlFor="bil_log">BIL_log (Bilirubin log)</Label>
                       <Input
-                        id="BIL_log"
-                        name="BIL_log"
+                        id="bil_log"
+                        name="bil_log"
                         type="number"
                         placeholder="Enter BIL_log value"
-                        value={formData.BIL_log}
+                        value={formData.bil_log}
                         onChange={handleInputChange}
                         step="0.01"
                         required
@@ -365,13 +364,13 @@ export default function HepatitisPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="ALT_log">ALT_log (Alanine Transaminase log)</Label>
+                      <Label htmlFor="alt_log">ALT_log (Alanine Transaminase log)</Label>
                       <Input
-                        id="ALT_log"
-                        name="ALT_log"
+                        id="alt_log"
+                        name="alt_log"
                         type="number"
                         placeholder="Enter ALT_log value"
-                        value={formData.ALT_log}
+                        value={formData.alt_log}
                         onChange={handleInputChange}
                         step="0.01"
                         required
@@ -381,13 +380,13 @@ export default function HepatitisPage() {
 
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                     <div className="space-y-2">
-                      <Label htmlFor="GGT_log">GGT_log (Gamma-Glutamyl Transferase log)</Label>
+                      <Label htmlFor="ggt_log">GGT_log (Gamma-Glutamyl Transferase log)</Label>
                       <Input
-                        id="GGT_log"
-                        name="GGT_log"
+                        id="ggt_log"
+                        name="ggt_log"
                         type="number"
                         placeholder="Enter GGT_log value"
-                        value={formData.GGT_log}
+                        value={formData.ggt_log}
                         onChange={handleInputChange}
                         step="0.01"
                         required
@@ -395,13 +394,13 @@ export default function HepatitisPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="AST_log">AST_log (Aspartate Aminotransferase log)</Label>
+                      <Label htmlFor="ast_log">AST_log (Aspartate Aminotransferase log)</Label>
                       <Input
-                        id="AST_log"
-                        name="AST_log"
+                        id="ast_log"
+                        name="ast_log"
                         type="number"
                         placeholder="Enter AST_log value"
-                        value={formData.AST_log}
+                        value={formData.ast_log}
                         onChange={handleInputChange}
                         step="0.01"
                         required
@@ -409,13 +408,13 @@ export default function HepatitisPage() {
                     </div>
 
                     <div className="space-y-2">
-                      <Label htmlFor="ALP_log">ALP_log (Alkaline Phosphatase log)</Label>
+                      <Label htmlFor="alp_log">ALP_log (Alkaline Phosphatase log)</Label>
                       <Input
-                        id="ALP_log"
-                        name="ALP_log"
+                        id="alp_log"
+                        name="alp_log"
                         type="number"
                         placeholder="Enter ALP_log value"
-                        value={formData.ALP_log}
+                        value={formData.alp_log}
                         onChange={handleInputChange}
                         step="0.01"
                         required
@@ -480,39 +479,39 @@ export default function HepatitisPage() {
                       </div>
                       <div>
                         <p className="font-medium">ALB (Albumin):</p>
-                        <p className="text-muted-foreground">{formData.ALB}</p>
+                        <p className="text-muted-foreground">{formData.alb}</p>
                       </div>
                       <div>
                         <p className="font-medium">CHE (Cholinesterase):</p>
-                        <p className="text-muted-foreground">{formData.CHE}</p>
+                        <p className="text-muted-foreground">{formData.che}</p>
                       </div>
                       <div>
                         <p className="font-medium">CHOL (Cholesterol):</p>
-                        <p className="text-muted-foreground">{formData.CHOL}</p>
+                        <p className="text-muted-foreground">{formData.chol}</p>
                       </div>
                       <div>
                         <p className="font-medium">CREA_log (Creatinine log):</p>
-                        <p className="text-muted-foreground">{formData.CREA_log}</p>
+                        <p className="text-muted-foreground">{formData.crea_log}</p>
                       </div>
                       <div>
                         <p className="font-medium">BIL_log (Bilirubin log):</p>
-                        <p className="text-muted-foreground">{formData.BIL_log}</p>
+                        <p className="text-muted-foreground">{formData.bil_log}</p>
                       </div>
                       <div>
                         <p className="font-medium">ALT_log (Alanine Transaminase log):</p>
-                        <p className="text-muted-foreground">{formData.ALT_log}</p>
+                        <p className="text-muted-foreground">{formData.alt_log}</p>
                       </div>
                       <div>
                         <p className="font-medium">GGT_log (Gamma-Glutamyl Transferase log):</p>
-                        <p className="text-muted-foreground">{formData.GGT_log}</p>
+                        <p className="text-muted-foreground">{formData.ggt_log}</p>
                       </div>
                       <div>
                         <p className="font-medium">AST_log (Aspartate Aminotransferase log):</p>
-                        <p className="text-muted-foreground">{formData.AST_log}</p>
+                        <p className="text-muted-foreground">{formData.ast_log}</p>
                       </div>
                       <div>
                         <p className="font-medium">ALP_log (Alkaline Phosphatase log):</p>
-                        <p className="text-muted-foreground">{formData.ALP_log}</p>
+                        <p className="text-muted-foreground">{formData.alp_log}</p>
                       </div>
                     </div>
                   </div>
@@ -526,15 +525,15 @@ export default function HepatitisPage() {
                         setFormData({
                           age: "",
                           sex: "0",
-                          ALB: "",
-                          CHE: "",
-                          CHOL: "",
-                          CREA_log: "",
-                          BIL_log: "",
-                          ALT_log: "",
-                          GGT_log: "",
-                          AST_log: "",
-                          ALP_log: "",
+                          alb: "",
+                          che: "",
+                          chol: "",
+                          crea_log: "",
+                          bil_log: "",
+                          alt_log: "",
+                          ggt_log: "",
+                          ast_log: "",
+                          alp_log: "",
                         })
                         setResult(null)
                         setSummary("")

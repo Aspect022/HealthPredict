@@ -82,18 +82,18 @@ class ThyroidInput(BaseModel):
 
 class DepressionInput(BaseModel):
     gender: int
-    age: int
-    city: str
-    academic_pressure: int
+    age: float
+    city: int
+    academic_pressure: float
     cgpa: float
-    study_satisfaction: int
+    study_satisfaction: float
     sleep_duration: int
     dietary_habits: int
-    new_degree: int
-    suicidal_thoughts: int
+    suicidal_thoughts: int  # "Have you ever had suicidal thoughts ?" column
     work_study_hours: float
-    financial_stress: int
+    financial_stress: float
     family_history_mental_illness: int
+    new_degree: int
 
 class HepatitisInput(BaseModel):
     age: int
@@ -112,7 +112,7 @@ class HeartInput(BaseModel):
     age: int
     gender: int
     chestpain: int
-    restingbp: int
+    restingBP: int
     serumcholesterol: int
     fastingbloodsugar: int
     restingrelectro: int

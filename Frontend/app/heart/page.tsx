@@ -191,7 +191,7 @@ export default function HeartPage() {
         age: Number.parseInt(formData.age),
         gender: Number.parseInt(formData.gender),
         chestpain: Number.parseInt(formData.chestpaintype),
-        restingbp: Number.parseInt(formData.restingbloodpressure),
+        restingBP: Number.parseInt(formData.restingbloodpressure),
         serumcholesterol: Number.parseInt(formData.serumcholesterol),
         fastingbloodsugar: Number.parseInt(formData.fastingbloodsugar),
         restingrelectro: Number.parseInt(formData.restingelectro),

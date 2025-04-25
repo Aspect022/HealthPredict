@@ -82,6 +82,13 @@ const diseaseCards = [
     icon: <MessageSquare className="h-6 w-6 text-primary" />,
     href: "/ai-assistant",
   },
+  {
+    title: "Upload Report",
+    description: "Chat with our AI-powered health assistant for personalized health advice.",
+    content: "Powered by Google Gemini, our AI assistant can answer health questions and provide wellness guidance.",
+    icon: <MessageSquare className="h-6 w-6 text-primary" />,
+    href: "/FileUploadPage",
+  },
 ]
 
 export default function Home() {
