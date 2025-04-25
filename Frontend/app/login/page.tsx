@@ -43,8 +43,12 @@ export default function LoginPage() {
         throw new Error(data.message || "Login failed")
       }
 
-      // Use the login function from auth context
-      login(data.token)
+      // Store user data instead of token
+      login({
+        id: data.id,
+        username: data.username,
+        email: data.email
+      })
 
       // Redirect to homepage
       router.push("/")

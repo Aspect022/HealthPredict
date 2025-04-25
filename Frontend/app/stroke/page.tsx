@@ -2,14 +2,15 @@
 
 import type React from "react"
 
-import { useState, useEffect } from "react" // Added useEffect
-import { Loader2 } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Loader2 } from 'lucide-react'
 import { useAuth } from "@/context/auth-context"
 import { Button } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Navbar } from "@/components/navbar"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert"
@@ -19,32 +20,36 @@ interface FormData {
   age: string
   hypertension: string
   heart_disease: string
-  smoking_history: string
+  ever_married: string
+  work_type: string
+  residence_type: string
+  avg_glucose_level: string
   bmi: string
-  hba1c_level: string
-  blood_glucose_level: string
+  smoking_status: string
 }
 
 interface PredictionResult {
   prediction: number
   risk_status?: string
-  probability?: number  // Keep this optional for backward compatibility
+  probability?: number
 }
 
-export default function DiabetesPage() {
+export default function StrokePage() {
   const [activeTab, setActiveTab] = useState("form")
   const [isLoading, setIsLoading] = useState(false)
-  const [isSummaryLoading, setIsSummaryLoading] = useState(false) // Added new state for summary loading
+  const [isSummaryLoading, setIsSummaryLoading] = useState(false)
   const [error, setError] = useState("")
   const [formData, setFormData] = useState<FormData>({
     gender: "0", // Default to male
     age: "",
     hypertension: "0", // Default to no
     heart_disease: "0", // Default to no
-    smoking_history: "0", // Default to never smoked
+    ever_married: "0", // Default to no
+    work_type: "0", // Default to private
+    residence_type: "0", // Default to urban
+    avg_glucose_level: "",
     bmi: "",
-    hba1c_level: "",
-    blood_glucose_level: "",
+    smoking_status: "0", // Default to never smoked
   })
   const [result, setResult] = useState<PredictionResult | null>(null)
   const [summary, setSummary] = useState("")
@@ -58,11 +63,20 @@ export default function DiabetesPage() {
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
+  const handleSelectChange = (name: string, value: string) => {
+    setFormData((prev) => ({ ...prev, [name]: value }))
+  }
+
   const validateForm = () => {
-    const { age, bmi, hba1c_level, blood_glucose_level } = formData
+    const { age, avg_glucose_level, bmi } = formData
 
     if (!age || isNaN(Number(age)) || Number(age) <= 0 || Number(age) > 120) {
       setError("Please enter a valid age between 1 and 120")
+      return false
+    }
+
+    if (!avg_glucose_level || isNaN(Number(avg_glucose_level)) || Number(avg_glucose_level) < 50 || Number(avg_glucose_level) > 300) {
+      setError("Please enter a valid average glucose level between 50 and 300")
       return false
     }
 
@@ -71,54 +85,38 @@ export default function DiabetesPage() {
       return false
     }
 
-    if (!hba1c_level || isNaN(Number(hba1c_level)) || Number(hba1c_level) < 3 || Number(hba1c_level) > 15) {
-      setError("Please enter a valid HbA1c level between 3 and 15")
-      return false
-    }
-
-    if (
-      !blood_glucose_level ||
-      isNaN(Number(blood_glucose_level)) ||
-      Number(blood_glucose_level) < 50 ||
-      Number(blood_glucose_level) > 400
-    ) {
-      setError("Please enter a valid blood glucose level between 50 and 400")
-      return false
-    }
-
     return true
   }
   
   const { isAuthenticated } = useAuth();
   
-  // New function to fetch AI summary
   const fetchAISummary = async (predictionData: PredictionResult) => {
     setIsSummaryLoading(true)
     
     try {
-      // Format the parameters for the AI summary API
       const parameters = {
         gender: Number.parseInt(formData.gender),
         age: Number.parseFloat(formData.age),
         hypertension: Number.parseInt(formData.hypertension),
         heart_disease: Number.parseInt(formData.heart_disease),
-        smoking_history: Number.parseInt(formData.smoking_history),
+        ever_married: Number.parseInt(formData.ever_married),
+        work_type: Number.parseInt(formData.work_type),
+        residence_type: Number.parseInt(formData.residence_type),
+        avg_glucose_level: Number.parseFloat(formData.avg_glucose_level),
         bmi: Number.parseFloat(formData.bmi),
-        HbA1c_level: Number.parseFloat(formData.hba1c_level),
-        blood_glucose_level: Number.parseInt(formData.blood_glucose_level),
+        smoking_status: Number.parseInt(formData.smoking_status),
       }
 
-      // Call the API route for AI summary
       const summaryResponse = await fetch("/api/ai-summary", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          disease: "diabetes",
+          disease: "stroke",
           parameters,
           prediction: predictionData.prediction,
-          probability: predictionData.probability || 0.5, // Default probability if not provided
+          probability: predictionData.probability || 0.5,
         }),
       })
 
@@ -136,7 +134,6 @@ export default function DiabetesPage() {
     }
   }
 
-  // Effect to fetch AI summary when result changes
   useEffect(() => {
     if (result && activeTab === "results") {
       fetchAISummary(result)
@@ -154,26 +151,24 @@ export default function DiabetesPage() {
     setIsLoading(true)
 
     try {
-      // Check if user is authenticated 
       if (!isAuthenticated) {
         throw new Error("You must be logged in to access this feature")
       }
       
-      // Convert form data to the format expected by the API
       const apiData = {
         gender: Number.parseInt(formData.gender),
         age: Number.parseFloat(formData.age),
         hypertension: Number.parseInt(formData.hypertension),
         heart_disease: Number.parseInt(formData.heart_disease),
-        smoking_history: Number.parseInt(formData.smoking_history),
+        ever_married: Number.parseInt(formData.ever_married),
+        work_type: Number.parseInt(formData.work_type),
+        residence_type: Number.parseInt(formData.residence_type),
+        avg_glucose_level: Number.parseFloat(formData.avg_glucose_level),
         bmi: Number.parseFloat(formData.bmi),
-        HbA1c_level: Number.parseFloat(formData.hba1c_level),
-        blood_glucose_level: Number.parseInt(formData.blood_glucose_level),
+        smoking_status: Number.parseInt(formData.smoking_status),
       }
-      console.log("Submitting form with data:", apiData)
 
-      // Call the FastAPI backend for prediction without token
-      const predictionResponse = await fetch("http://localhost:8000/predict/diabetes", {
+      const predictionResponse = await fetch("http://localhost:8000/predict/stroke", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -187,8 +182,6 @@ export default function DiabetesPage() {
 
       const predictionData = await predictionResponse.json()
       setResult(predictionData)
-
-      // Switch to results tab
       setActiveTab("results")
     } catch (err) {
       console.error("Error submitting form:", err)
@@ -202,7 +195,7 @@ export default function DiabetesPage() {
     <div className="min-h-screen flex flex-col">
       <Navbar showBackButton />
       <div className="container mx-auto max-w-4xl py-6 flex-1">
-        <h1 className="text-3xl font-bold mb-6">Diabetes Risk Assessment</h1>
+        <h1 className="text-3xl font-bold mb-6">Stroke Risk Assessment</h1>
 
         <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
           <TabsList className="grid w-full grid-cols-2">
@@ -312,63 +305,92 @@ export default function DiabetesPage() {
                   </div>
 
                   <div>
-                    <Label className="text-base font-medium">Smoking History</Label>
+                    <Label className="text-base font-medium">Ever Married?</Label>
                     <RadioGroup
-                      value={formData.smoking_history}
-                      onValueChange={(value) => handleRadioChange("smoking_history", value)}
-                      className="grid grid-cols-1 md:grid-cols-2 gap-2 mt-2"
+                      value={formData.ever_married}
+                      onValueChange={(value) => handleRadioChange("ever_married", value)}
+                      className="flex flex-row gap-4 mt-2"
                     >
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="0" id="smoking-never" />
-                        <Label htmlFor="smoking-never">Never Smoked</Label>
+                        <RadioGroupItem value="0" id="ever-married-no" />
+                        <Label htmlFor="ever-married-no">No</Label>
                       </div>
                       <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="1" id="smoking-current" />
-                        <Label htmlFor="smoking-current">Current Smoker</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="2" id="smoking-former" />
-                        <Label htmlFor="smoking-former">Former Smoker</Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <RadioGroupItem value="3" id="smoking-no-info" />
-                        <Label htmlFor="smoking-no-info">No Information</Label>
+                        <RadioGroupItem value="1" id="ever-married-yes" />
+                        <Label htmlFor="ever-married-yes">Yes</Label>
                       </div>
                     </RadioGroup>
                   </div>
 
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div className="space-y-2">
-                      <Label htmlFor="hba1c_level">HbA1c Level (%)</Label>
-                      <Input
-                        id="hba1c_level"
-                        name="hba1c_level"
-                        type="number"
-                        placeholder="Enter your HbA1c level"
-                        value={formData.hba1c_level}
-                        onChange={handleInputChange}
-                        min="3"
-                        max="15"
-                        step="0.1"
-                        required
-                      />
-                    </div>
+                  <div className="space-y-2">
+                    <Label htmlFor="work_type">Work Type</Label>
+                    <Select 
+                      value={formData.work_type} 
+                      onValueChange={(value) => handleSelectChange("work_type", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select work type" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">Private</SelectItem>
+                        <SelectItem value="1">Self-employed</SelectItem>
+                        <SelectItem value="2">Government Job</SelectItem>
+                        <SelectItem value="3">Children</SelectItem>
+                        <SelectItem value="4">Never worked</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                    <div className="space-y-2">
-                      <Label htmlFor="blood_glucose_level">Blood Glucose Level (mg/dL)</Label>
-                      <Input
-                        id="blood_glucose_level"
-                        name="blood_glucose_level"
-                        type="number"
-                        placeholder="Enter your blood glucose level"
-                        value={formData.blood_glucose_level}
-                        onChange={handleInputChange}
-                        min="50"
-                        max="400"
-                        step="1"
-                        required
-                      />
-                    </div>
+                  <div>
+                    <Label className="text-base font-medium">Residence Type</Label>
+                    <RadioGroup
+                      value={formData.residence_type}
+                      onValueChange={(value) => handleRadioChange("residence_type", value)}
+                      className="flex flex-row gap-4 mt-2"
+                    >
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="0" id="residence-urban" />
+                        <Label htmlFor="residence-urban">Urban</Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <RadioGroupItem value="1" id="residence-rural" />
+                        <Label htmlFor="residence-rural">Rural</Label>
+                      </div>
+                    </RadioGroup>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="avg_glucose_level">Average Glucose Level (mg/dL)</Label>
+                    <Input
+                      id="avg_glucose_level"
+                      name="avg_glucose_level"
+                      type="number"
+                      placeholder="Enter your average glucose level"
+                      value={formData.avg_glucose_level}
+                      onChange={handleInputChange}
+                      min="50"
+                      max="300"
+                      step="0.1"
+                      required
+                    />
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="smoking_status">Smoking Status</Label>
+                    <Select 
+                      value={formData.smoking_status} 
+                      onValueChange={(value) => handleSelectChange("smoking_status", value)}
+                    >
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select smoking status" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="0">Never smoked</SelectItem>
+                        <SelectItem value="1">Formerly smoked</SelectItem>
+                        <SelectItem value="2">Smokes</SelectItem>
+                        <SelectItem value="3">Unknown</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
                 </div>
 
@@ -395,7 +417,7 @@ export default function DiabetesPage() {
                     <div
                       className={`text-3xl font-bold ${result.prediction === 1 ? "text-red-500" : "text-green-500"}`}
                     >
-                      {result.risk_status || (result.prediction === 1 ? "High Risk of Diabetes" : "Low Risk of Diabetes")}
+                      {result.risk_status || (result.prediction === 1 ? "High Risk of Stroke" : "Low Risk of Stroke")}
                     </div>
                     {result.probability !== undefined && (
                       <p className="mt-2 text-lg">
@@ -403,6 +425,7 @@ export default function DiabetesPage() {
                       </p>
                     )}
                   </div>
+
                   <div className="border-t pt-4">
                     <h3 className="text-xl font-semibold mb-3">AI Analysis</h3>
                     {isSummaryLoading ? (
@@ -438,28 +461,37 @@ export default function DiabetesPage() {
                         <p className="text-muted-foreground">{formData.heart_disease === "1" ? "Yes" : "No"}</p>
                       </div>
                       <div>
-                        <p className="font-medium">Smoking History:</p>
+                        <p className="font-medium">Ever Married:</p>
+                        <p className="text-muted-foreground">{formData.ever_married === "1" ? "Yes" : "No"}</p>
+                      </div>
+                      <div>
+                        <p className="font-medium">Work Type:</p>
                         <p className="text-muted-foreground">
-                          {formData.smoking_history === "0"
-                            ? "Never Smoked"
-                            : formData.smoking_history === "1"
-                              ? "Current Smoker"
-                              : formData.smoking_history === "2"
-                                ? "Former Smoker"
-                                : "No Information"}
+                          {formData.work_type === "0" ? "Private" : 
+                           formData.work_type === "1" ? "Self-employed" :
+                           formData.work_type === "2" ? "Government Job" :
+                           formData.work_type === "3" ? "Children" : "Never worked"}
                         </p>
+                      </div>
+                      <div>
+                        <p className="font-medium">Residence Type:</p>
+                        <p className="text-muted-foreground">{formData.residence_type === "0" ? "Urban" : "Rural"}</p>
+                      </div>
+                      <div>
+                        <p className="font-medium">Average Glucose Level:</p>
+                        <p className="text-muted-foreground">{formData.avg_glucose_level} mg/dL</p>
                       </div>
                       <div>
                         <p className="font-medium">BMI:</p>
                         <p className="text-muted-foreground">{formData.bmi} kg/m²</p>
                       </div>
                       <div>
-                        <p className="font-medium">HbA1c Level:</p>
-                        <p className="text-muted-foreground">{formData.hba1c_level}%</p>
-                      </div>
-                      <div>
-                        <p className="font-medium">Blood Glucose Level:</p>
-                        <p className="text-muted-foreground">{formData.blood_glucose_level} mg/dL</p>
+                        <p className="font-medium">Smoking Status:</p>
+                        <p className="text-muted-foreground">
+                          {formData.smoking_status === "0" ? "Never smoked" :
+                           formData.smoking_status === "1" ? "Formerly smoked" :
+                           formData.smoking_status === "2" ? "Smokes" : "Unknown"}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -475,10 +507,12 @@ export default function DiabetesPage() {
                           age: "",
                           hypertension: "0",
                           heart_disease: "0",
-                          smoking_history: "0",
+                          ever_married: "0",
+                          work_type: "0",
+                          residence_type: "0",
+                          avg_glucose_level: "",
                           bmi: "",
-                          hba1c_level: "",
-                          blood_glucose_level: "",
+                          smoking_status: "0",
                         })
                         setResult(null)
                         setSummary("")

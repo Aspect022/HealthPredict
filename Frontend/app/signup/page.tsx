@@ -1,40 +1,32 @@
-"use client";
+"use client"
 
-import type React from "react";
+import type React from "react"
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import Link from "next/link";
-import { Loader2 } from "lucide-react";
+import { useState } from "react"
+import { useRouter } from "next/navigation"
+import Link from "next/link"
+import { Loader2 } from "lucide-react"
 
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardFooter,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
-import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Navbar } from "@/components/navbar";
+import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import { Alert, AlertDescription } from "@/components/ui/alert"
+import { Navbar } from "@/components/navbar"
 
 export default function SignupPage() {
-  const router = useRouter();
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const router = useRouter()
+  const [username, setUsername] = useState("")
+  const [email, setEmail] = useState("")
+  const [password, setPassword] = useState("")
+  const [isLoading, setIsLoading] = useState(false)
+  const [error, setError] = useState("")
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsLoading(true);
-    setError("");
+    e.preventDefault()
+    setIsLoading(true)
+    setError("")
 
-    // Update the error handling in both login and signup pages:
     try {
       const response = await fetch("http://localhost:8000/signup", {
         method: "POST",
@@ -42,24 +34,22 @@ export default function SignupPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({ username, email, password }),
-      });
+      })
 
-      const data = await response.json();
+      const data = await response.json()
 
       if (!response.ok) {
-        throw new Error(data.detail || data.message || "Signup failed");
+        throw new Error(data.message || "Signup failed")
       }
 
       // Redirect to login page after successful signup
-      router.push("/login");
+      router.push("/login")
     } catch (err) {
-      setError(
-        err instanceof Error ? err.message : "An error occurred during signup"
-      );
+      setError(err instanceof Error ? err.message : "An error occurred during signup")
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex flex-col">
@@ -67,12 +57,8 @@ export default function SignupPage() {
       <div className="flex-1 flex items-center justify-center p-4">
         <Card className="w-full max-w-md">
           <CardHeader className="space-y-1">
-            <CardTitle className="text-2xl font-bold">
-              Create an account
-            </CardTitle>
-            <CardDescription>
-              Enter your details to create your account
-            </CardDescription>
+            <CardTitle className="text-2xl font-bold">Create an account</CardTitle>
+            <CardDescription>Enter your details to create your account</CardDescription>
           </CardHeader>
           <form onSubmit={handleSubmit}>
             <CardContent className="space-y-4">
@@ -135,5 +121,5 @@ export default function SignupPage() {
         </Card>
       </div>
     </div>
-  );
+  )
 }

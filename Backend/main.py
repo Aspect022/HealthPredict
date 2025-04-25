@@ -1,27 +1,21 @@
 # main.py
 from fastapi import FastAPI, Depends, HTTPException, status
-from fastapi.security import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
-from typing import Optional
-from datetime import timedelta
 from fastapi.middleware.cors import CORSMiddleware
-
-
-# Import from local modules
+from fastapi.responses import JSONResponse
 from database import SessionLocal, engine
 from models import Base, User
 from utils import hash_password, verify_password
-from auth import create_access_token, get_db, get_current_user, ACCESS_TOKEN_EXPIRE_MINUTES
+from auth import get_db
+from schemas import DiabetesInput,StrokeInput,ParkinsonsInput,ThyroidInput,DepressionInput,HepatitisInput,HeartInput,KidneyInput  # Import additional models as needed
+from predictor import DiseasePredictor
 
 # Create tables in the database
 Base.metadata.create_all(bind=engine)
 
 # Initialize FastAPI application
-app = FastAPI(title="FastAPI with JWT Authentication")
-
-# Initialize FastAPI application
-app = FastAPI(title="FastAPI with JWT Authentication")
+app = FastAPI(title="FastAPI Application")
 
 # Configure CORS
 app.add_middleware(
@@ -42,10 +36,6 @@ class UserLogin(BaseModel):
     email: EmailStr
     password: str
 
-class Token(BaseModel):
-    access_token: str
-    token_type: str
-
 class UserResponse(BaseModel):
     id: int
     username: str
@@ -53,7 +43,6 @@ class UserResponse(BaseModel):
 
     class Config:
         from_attributes = True  # instead of orm_mode = True
-
 
 # Routes
 @app.post("/signup", status_code=status.HTTP_201_CREATED)
@@ -87,10 +76,9 @@ def signup(user_data: UserCreate, db: Session = Depends(get_db)):
     
     return {"message": "User created successfully"}
 
-# Update this in main.py
-@app.post("/login", response_model=Token)
+@app.post("/login")
 def login(user_data: UserLogin, db: Session = Depends(get_db)):
-    """Authenticate a user and return a JWT token."""
+    """Authenticate a user and return user info."""
     # Find user by email
     user = db.query(User).filter(User.email == user_data.email).first()
     
@@ -98,28 +86,47 @@ def login(user_data: UserLogin, db: Session = Depends(get_db)):
     if not user or not verify_password(user_data.password, user.hashed_password):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
-            detail="Incorrect email or password",
-            headers={"WWW-Authenticate": "Bearer"},
+            detail="Incorrect email or password"
         )
     
-    # Create access token
-    access_token_expires = timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    access_token = create_access_token(
-        data={"sub": user.email}, expires_delta=access_token_expires
-    )
+    # Return user info
+    return {
+        "username": user.username,
+        "email": user.email,
+        "id": user.id
+    }
+
+# Mapping of disease names to their input models
+disease_models = {
+    "diabetes": DiabetesInput,
+    "stroke": StrokeInput,
+    "parkinsons": ParkinsonsInput,
+    "thyroid": ThyroidInput,
+    "depression": DepressionInput,
+    "hepatitis": HepatitisInput,
+    "heart": HeartInput,
+    "kidney": KidneyInput
+}
+
+
+@app.post("/predict/{disease_name}")
+async def predict_disease(disease_name: str, input_data: dict):
+    if disease_name not in disease_models:
+        raise HTTPException(status_code=404, detail="Disease model not found")
     
-    return {"access_token": access_token, "token_type": "bearer"}
-
-
-@app.get("/users/me", response_model=UserResponse)
-def read_users_me(current_user: User = Depends(get_current_user)):
-    """Get current authenticated user."""
-    return current_user
+    input_model = disease_models[disease_name]
+    try:
+        # Convert dict to your input model
+        model_instance = input_model(**input_data)
+        predictor = DiseasePredictor(disease_name, input_model)
+        return predictor.predict(model_instance)
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=f"Invalid input data: {str(e)}")
 
 # API health check endpoint
 @app.get("/")
 def root():
-    return {"message": "FastAPI with JWT Authentication is running"}
+    return {"message": "FastAPI is running"}
 
 if __name__ == "__main__":
     import uvicorn
