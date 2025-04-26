@@ -4,13 +4,13 @@ import { Inter } from "next/font/google"
 
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/context/auth-context"
+import { FloatingChat } from "@/components/floating-chat"
 
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
   title: "HealthPredict - AI-Powered Health Prediction Services",
   description: "Advanced health prediction tools for diabetes, heart disease, and student depression detection",
-    generator: 'v0.dev'
 }
 
 export default function RootLayout({

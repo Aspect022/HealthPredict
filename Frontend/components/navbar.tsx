@@ -2,11 +2,19 @@
 
 import Link from "next/link"
 import { usePathname } from "next/navigation"
-import { ChevronLeft, LogOut } from "lucide-react"
+import { ChevronLeft, LogOut, User } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
 import { ThemeToggle } from "@/components/theme-toggle"
 import { useAuth } from "@/context/auth-context"
+import { Avatar, AvatarFallback } from "@/components/ui/avatar"
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 interface NavbarProps {
   showBackButton?: boolean
@@ -15,7 +23,7 @@ interface NavbarProps {
 export function Navbar({ showBackButton = false }: NavbarProps) {
   const pathname = usePathname()
   const isAuthPage = pathname === "/login" || pathname === "/signup"
-  const { isAuthenticated, logout } = useAuth()
+  const { isAuthenticated, user, logout } = useAuth()
 
   const handleLogout = () => {
     logout()
@@ -46,10 +54,30 @@ export function Navbar({ showBackButton = false }: NavbarProps) {
         {!showBackButton && !isAuthPage && (
           <>
             {isAuthenticated ? (
-              <Button variant="outline" size="sm" onClick={handleLogout} className="flex items-center gap-1">
-                <LogOut className="h-4 w-4" />
-                Logout
-              </Button>
+              <div className="flex items-center gap-2">
+                <DropdownMenu>
+                  <DropdownMenuTrigger asChild>
+                    <Avatar className="h-9 w-9 cursor-pointer">
+                      <AvatarFallback className="bg-primary text-primary-foreground">
+                        {user?.username?.charAt(0).toUpperCase() || "U"}
+                      </AvatarFallback>
+                    </Avatar>
+                  </DropdownMenuTrigger>
+                  <DropdownMenuContent align="end">
+                    <Link href="/profile">
+                      <DropdownMenuItem className="cursor-pointer">
+                        <User className="mr-2 h-4 w-4" />
+                        Profile
+                      </DropdownMenuItem>
+                    </Link>
+                    <DropdownMenuSeparator />
+                    <DropdownMenuItem onClick={handleLogout} className="cursor-pointer">
+                      <LogOut className="mr-2 h-4 w-4" />
+                      Logout
+                    </DropdownMenuItem>
+                  </DropdownMenuContent>
+                </DropdownMenu>
+              </div>
             ) : (
               <>
                 <Button variant="outline" size="sm" asChild>

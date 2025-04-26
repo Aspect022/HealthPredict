@@ -76,16 +76,9 @@ const diseaseCards = [
     href: "/hepatitis",
   },
   {
-    title: "AI Health Assistant",
-    description: "Chat with our AI-powered health assistant for personalized health advice.",
-    content: "Powered by Google Gemini, our AI assistant can answer health questions and provide wellness guidance.",
-    icon: <MessageSquare className="h-6 w-6 text-primary" />,
-    href: "/ai-assistant",
-  },
-  {
     title: "Upload Report",
-    description: "Chat with our AI-powered health assistant for personalized health advice.",
-    content: "Powered by Google Gemini, our AI assistant can answer health questions and provide wellness guidance.",
+    description: "Upload your medical reports for AI analysis and insights.",
+    content: "Our AI assistant can analyze your medical reports and provide personalized health insights.",
     icon: <MessageSquare className="h-6 w-6 text-primary" />,
     href: "/FileUploadPage",
   },

@@ -96,17 +96,7 @@ else if (disease === "stroke") {
   const hypertension = parameters.hypertension === 1 ? "has hypertension" : "does not have hypertension"
   const heartDisease = parameters.heart_disease === 1 ? "has heart disease" : "does not have heart disease"
   const maritalStatus = parameters.ever_married === "Yes" ? "is married" : "is not married"
-  const workType = parameters.work_type.replace("_", " ")
   const residence = parameters.residence_type
-  const statusMap = ["never smoked", "formerly smoked", "smokes"];
-
-const smokingStatus = ({
-  "formerly smoked": "has a history of smoking",
-  "smokes": "is currently a smoker",
-  "never smoked": "has never smoked"
-})[statusMap[parameters.smoking_status]] || "has unknown smoking status";
-
-  
   
   prompt = `You are a trusted AI medical expert with specialization in cardiovascular neurology and epidemiology.
 
@@ -118,11 +108,9 @@ Patient Profile:
 - Marital Status: ${maritalStatus}
 - Hypertension: ${hypertension}
 - Heart Disease: ${heartDisease}
-- Work Type: ${workType}
 - Residence Type: ${residence}
 - Average Glucose Level: ${parameters.avg_glucose_level} mg/dL
 - BMI: ${parameters.bmi}
-- Smoking Status: ${smokingStatus}
 
 Create a 200–250 word expert summary that explains stroke risk factors, known epidemiological links, model insights, and personal health strategies specific to this profile. Focus only on stroke-related content with clarity and compassion.`
 }

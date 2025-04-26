@@ -179,10 +179,13 @@ export default function DiabetesPage() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(apiData),
-      });
+      })
 
       if (!predictionResponse.ok) {
-        throw new Error("Failed to get prediction from the model");
+        const errText = await predictionResponse.text()
+        console.error(`Prediction API error ${predictionResponse.status}: ${errText}`)
+
+        throw new Error(`Failed to get prediction from the model: ${errText}`)
       }
 
       const predictionData = await predictionResponse.json()
