@@ -1,8 +1,11 @@
 
- 
+---
+
 # 🩺 HealthPredict - Multi-Disease Prediction System
 
 An AI-powered health prediction platform that forecasts the risk of multiple diseases based on patient input data. This system uses specialized machine learning models for each disease, ensuring accurate and reliable predictions across a broad spectrum of health conditions.
+
+---
 
 ## 📌 Features
 
@@ -35,42 +38,53 @@ An AI-powered health prediction platform that forecasts the risk of multiple dis
 
 ## 📊 ML Models & Accuracy
 
-| Disease           | Accuracy (%) |
-|:------------------|:-------------|
-| Hepatitis         | 95.8         |
-| Thyroid           | 96.3         |
-| Kidney Fibrosis   | 95.5         |
-| Heart Disease     | 96.7         |
-| Stroke            | 95.9         |
-| Student Depression | 98.5         |
-| Parkinson’s       | 96.1         |
-| Diabetes          | 97.0         |
+| Disease            | Accuracy (%) |
+|:-------------------|:--------------|
+| Hepatitis           | 95.8         |
+| Thyroid             | 96.3         |
+| Kidney Fibrosis     | 95.5         |
+| Heart Disease       | 96.7         |
+| Stroke              | 95.9         |
+| Student Depression  | 98.5         |
+| Parkinson’s Disease | 96.1         |
+| Diabetes            | 97.0         |
+
 ---
 
 ## 🚀 How to Run Locally
 
-### Backend
+### 📦 Backend
+
 ```bash
 cd backend
 pip install -r requirements.txt
 uvicorn main:app --reload
----
-###Frontend
-```bash
+
+💻 Frontend
+
 cd frontend
 npm install
 npm run dev
 
+
 ---
 
-##📬 Contact
+📬 Contact
 
 For inquiries or collaboration:
 📧 jayeshrl2005@gmail.com
 
+
 ---
-##📄 License
+
+📄 License
 
 This project is licensed under the MIT License.
 
-made with ♥️.
+
+---
+
+Made with ❤️ by Jayesh RL
+
+---
+
