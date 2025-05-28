@@ -2,44 +2,49 @@
  
 # 🩺 HealthPredict - Multi-Disease Prediction System
 
-An AI-powered health prediction system designed to forecast the risk of multiple diseases based on patient input parameters. This application leverages machine learning models tailored for individual diseases, providing fast and reliable predictions through a user-friendly web interface.
+An AI-powered health prediction platform that forecasts the risk of multiple diseases based on patient input data. This system uses specialized machine learning models for each disease, ensuring accurate and reliable predictions across a broad spectrum of health conditions.
 
 ## 📌 Features
 
-- 🌐 Full-stack implementation with **FastAPI backend** and **React frontend**
+- 🌐 Full-stack app with **FastAPI backend** and **React frontend**
 - 📊 Predicts risks for:
-  - Diabetes
-  - Stroke
-  - Parkinson’s Disease
+  - Hepatitis
   - Thyroid Disorders
-  - Depression
-- 🧠 High-accuracy ML models trained on curated datasets
-- 📈 Real-time prediction with input validation
-- 🌙 Dark mode UI for enhanced user experience (because why not 😎)
-- 📬 Functional contact form via email integration
+  - Kidney Fibrosis
+  - Heart Disease
+  - Stroke
+  - Student Depression
+  - Parkinson’s Disease
+  - Diabetes
+- 🧠 Individually trained ML models tailored for each disease’s unique data features
+- 📈 Real-time predictions with input validation
+- 🌙 Dark mode UI for better user experience
+- 📬 Contact form integrated for user communication
 
 ---
 
 ## 🛠️ Tech Stack
 
-- **Frontend:** React, Next.js, TypeScript, TailwindCSS
-- **Backend:** FastAPI, Python
-- **Database:** MySQL
-- **Machine Learning:** Scikit-learn, Pandas, Numpy
-- **Deployment:** Vercel (Frontend), Render (Backend)
+- **Frontend:** React, Next.js, TypeScript, TailwindCSS  
+- **Backend:** FastAPI, Python  
+- **Database:** MySQL  
+- **Machine Learning:** Scikit-learn, Pandas, Numpy  
+- **Deployment:** Vercel (Frontend), Render (Backend)  
 
 ---
 
 ## 📊 ML Models & Accuracy
 
-| Disease     | Model Used        | Accuracy |
-|:------------|:------------------|:-----------|
-| Diabetes     | Logistic Regression | 98%        |
-| Stroke       | Decision Tree       | 96%        |
-| Parkinson's  | Random Forest       | 97%        |
-| Thyroid      | Logistic Regression | 95%        |
-| Depression   | Random Forest       | 98%        |
-
+| Disease           | Accuracy (%) |
+|:------------------|:-------------|
+| Hepatitis         | 95.8         |
+| Thyroid           | 96.3         |
+| Kidney Fibrosis   | 95.5         |
+| Heart Disease     | 96.7         |
+| Stroke            | 95.9         |
+| Student Depression | 98.5         |
+| Parkinson’s       | 96.1         |
+| Diabetes          | 97.0         |
 ---
 
 ## 🚀 How to Run Locally
@@ -58,13 +63,13 @@ npm run dev
 
 ---
 
-#📬 Contact
+##📬 Contact
 
 For inquiries or collaboration:
 📧 jayeshrl2005@gmail.com
 
 ---
-#📄 License
+##📄 License
 
 This project is licensed under the MIT License.
 
