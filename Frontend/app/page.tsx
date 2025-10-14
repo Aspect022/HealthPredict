@@ -3,14 +3,12 @@ import {
   Activity,
   Brain,
   Droplet,
-  MessageSquare,
   HeartPulse,
-  Baby,
   Thermometer,
   Waves,
   BabyIcon as Kidney,
   WormIcon as Virus,
-  Dna,
+  FileText,
 } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -79,7 +77,7 @@ const diseaseCards = [
     title: "Upload Report",
     description: "Upload your medical reports for AI analysis and insights.",
     content: "Our AI assistant can analyze your medical reports and provide personalized health insights.",
-    icon: <MessageSquare className="h-6 w-6 text-primary" />,
+    icon: <FileText className="h-6 w-6 text-primary" />,
     href: "/FileUploadPage",
   },
 ]
@@ -123,9 +121,9 @@ export default function Home() {
           </div>
         </section>
       </main>
-      <footer className="border-t py-6">
-        <div className="container flex flex-col items-center justify-between gap-4 md:flex-row">
-          <p className="text-center text-sm text-muted-foreground md:text-left">
+      <footer className="border-t py-6 md:py-0">
+        <div className="container flex flex-col items-center justify-center gap-4 md:h-24 md:flex-row">
+          <p className="text-center text-sm text-muted-foreground">
             &copy; {new Date().getFullYear()} HealthPredict. All rights reserved.
           </p>
         </div>

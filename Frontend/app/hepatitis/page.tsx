@@ -28,10 +28,12 @@ interface FormData {
   alp_log: string
 }
 
+// Update the PredictionResult interface to handle multiclass results
 interface PredictionResult {
-  prediction: number
+  prediction: number | string
   risk_status?: string
   probability?: number
+  class_name?: string // Add this for multiclass results
 }
 
 export default function HepatitisPage() {
@@ -203,7 +205,7 @@ export default function HepatitisPage() {
       }
       console.log("Submitting form with data:", apiData)
 
-      const predictionResponse = await fetch("http://localhost:8000/predict/hepatitis", {
+      const predictionResponse = await fetch("http://localhost:8000/api/v1/predict/hepatitis", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -443,11 +445,27 @@ export default function HepatitisPage() {
                 <div className="space-y-6">
                   <div className="text-center">
                     <h2 className="text-2xl font-bold mb-2">Assessment Results</h2>
+                    {/* Update the result display in the results tab section */}
                     <div
-                      className={`text-3xl font-bold ${result.prediction === 1 ? "text-red-500" : "text-green-500"}`}
+                      className={`text-3xl font-bold ${
+                        typeof result.prediction === "string"
+                          ? result.prediction.includes("High")
+                            ? "text-red-500"
+                            : result.prediction.includes("Moderate")
+                              ? "text-amber-500"
+                              : "text-green-500"
+                          : result.prediction === 1
+                            ? "text-red-500"
+                            : "text-green-500"
+                      }`}
                     >
-                      {result.risk_status ||
-                        (result.prediction === 1 ? "High Risk of Hepatitis" : "Low Risk of Hepatitis")}
+                      {result.class_name ||
+                        result.risk_status ||
+                        (typeof result.prediction === "string"
+                          ? result.prediction
+                          : result.prediction === 1
+                            ? "High Risk of Hepatitis"
+                            : "Low Risk of Hepatitis")}
                     </div>
                     {result.probability !== undefined && (
                       <p className="mt-2 text-lg">Confidence: {(result.probability * 100).toFixed(2)}%</p>

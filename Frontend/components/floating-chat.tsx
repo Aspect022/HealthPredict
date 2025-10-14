@@ -105,8 +105,10 @@ export function FloatingChat() {
                 <div
                   key={message.id}
                   className={cn(
-                    "flex w-max max-w-[80%] flex-col rounded-lg px-3 py-2 text-sm",
-                    message.role === "user" ? "ml-auto bg-primary text-primary-foreground" : "bg-muted",
+                    "flex flex-col rounded-lg px-3 py-2 text-sm",
+                    message.role === "user"
+                      ? "ml-auto bg-primary text-primary-foreground max-w-[80%]"
+                      : "bg-muted max-w-[80%]",
                   )}
                 >
                   <div className="flex items-center gap-2 text-xs font-medium">
@@ -120,11 +122,11 @@ export function FloatingChat() {
                       </>
                     )}
                   </div>
-                  <p className="mt-1 whitespace-pre-wrap">{message.content}</p>
+                  <p className="mt-1 whitespace-pre-wrap break-words">{message.content}</p>
                 </div>
               ))}
               {isLoading && (
-                <div className="flex w-max max-w-[80%] flex-col rounded-lg bg-muted px-3 py-2 text-sm">
+                <div className="flex flex-col rounded-lg bg-muted px-3 py-2 text-sm max-w-[80%]">
                   <div className="flex items-center gap-2 text-xs font-medium">
                     <Bot className="h-3 w-3" /> Health Assistant
                   </div>

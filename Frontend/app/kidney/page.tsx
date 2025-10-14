@@ -293,7 +293,7 @@ export default function KidneyPage() {
       }
       console.log("Submitting form with data:", apiData)
 
-      const predictionResponse = await fetch("http://localhost:8000/predict/kidney", {
+      const predictionResponse = await fetch("http://localhost:8000/api/v1/predict/kidney", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

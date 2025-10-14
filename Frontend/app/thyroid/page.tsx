@@ -223,7 +223,7 @@ export default function ThyroidPage() {
       }
       console.log("Submitting form with data:", apiData)
 
-      const predictionResponse = await fetch("http://localhost:8000/predict/thyroid", {
+      const predictionResponse = await fetch("http://localhost:8000/api/v1/predict/thyroid", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

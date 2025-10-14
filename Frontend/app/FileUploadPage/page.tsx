@@ -40,7 +40,7 @@ export default function FileUploadPage() {
     formData.append("file", file)
   
     try {
-      const response = await fetch("http://localhost:8000/analyze-pdf", {
+      const response = await fetch("http://localhost:8000/api/v1/analyze-pdf", {
         method: "POST",
         body: formData,
       })

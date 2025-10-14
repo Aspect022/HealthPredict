@@ -5,6 +5,7 @@ import { Inter } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
 import { AuthProvider } from "@/context/auth-context"
 import { FloatingChat } from "@/components/floating-chat"
+import { AuthAlert } from "../components/auth-alert"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -28,7 +29,11 @@ export default function RootLayout({
           disableTransitionOnChange={false}
           storageKey="healthpredict-theme"
         >
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider>
+            {children}
+            <AuthAlert />
+            <FloatingChat />
+          </AuthProvider>
         </ThemeProvider>
       </body>
     </html>
