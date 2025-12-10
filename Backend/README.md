@@ -74,7 +74,7 @@ Backend/
 │   │   └── model.pkl
 │   ├── Thyroid/
 │   │   └── model.pkl
-│   ├── Hepatits/
+│   ├── Hepatits/                 # Note: typo in directory name
 │   │   └── model.pkl
 │   ├── Kidney/
 │   │   └── model.pkl
@@ -386,7 +386,7 @@ Analyze medical documents using AI
 | Stroke | `models/Stroke/model.pkl` | 10 features | Stroke risk prediction |
 | Parkinson's | `models/Parkinsons/model.pkl` | 58 features | Comprehensive Parkinson's assessment |
 | Thyroid | `models/Thyroid/model.pkl` | 21 features | Thyroid disorder detection |
-| Hepatitis | `models/Hepatits/model.pkl` | 11 features | Hepatitis prediction |
+| Hepatitis | `models/Hepatits/model.pkl` | 11 features | Hepatitis prediction *(Note: directory name is 'Hepatits')* |
 | Kidney Disease | `models/Kidney/model.pkl` | 24 features | Kidney disease detection |
 
 ### Model Loading

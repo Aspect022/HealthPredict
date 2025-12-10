@@ -176,7 +176,7 @@ All ML models are pre-trained and stored in the `Backend/models/` directory. Eac
 - **Stroke**: `models/Stroke/model.pkl`
 - **Parkinson's**: `models/Parkinsons/model.pkl`
 - **Thyroid**: `models/Thyroid/model.pkl`
-- **Hepatitis**: `models/Hepatits/model.pkl`
+- **Hepatitis**: `models/Hepatits/model.pkl` *(Note: directory name is 'Hepatits' in the codebase)*
 - **Kidney**: `models/Kidney/model.pkl`
 
 Models are loaded using `joblib` and predictions are made using scikit-learn's prediction interface.
