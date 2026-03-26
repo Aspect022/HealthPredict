@@ -1,0 +1,20 @@
+stages:
+  train_diabetes:
+    cmd: python -m ml.train_diabetes
+    deps:
+      - ml/train_diabetes.py
+      - ml/config.py
+      - ml/data/diabetes.csv
+    outs:
+      - models/diabetes/model.pkl
+    metrics:
+      - ml/reports/diabetes_metrics.json
+
+  evaluate_diabetes:
+    cmd: python -m ml.evaluate_diabetes --model-path models/diabetes/model.pkl
+    deps:
+      - ml/evaluate_diabetes.py
+      - models/diabetes/model.pkl
+      - ml/data/diabetes.csv
+    metrics:
+      - ml/reports/diabetes_metrics.json

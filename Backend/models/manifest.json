@@ -1,0 +1,17 @@
+{
+  "diabetes": {
+    "artifact_path": "diabetes/model.pkl",
+    "model_version": "0.1.0",
+    "schema_version": "v1",
+    "feature_order": [
+      "gender",
+      "age",
+      "hypertension",
+      "heart_disease",
+      "smoking_history",
+      "bmi",
+      "HbA1c_level",
+      "blood_glucose_level"
+    ]
+  }
+}

@@ -11,3 +11,7 @@ passlib
 scikit-learn==1.3.2
 mysql-connector-python
 uvicorn[standard]
+pandas
+mlflow
+dvc
+prefect

@@ -1,0 +1,5 @@
+[core]
+    remote = localstorage
+
+[remote "localstorage"]
+    url = ../.dvc-storage

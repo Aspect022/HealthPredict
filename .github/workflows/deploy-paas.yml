@@ -1,0 +1,17 @@
+name: Deploy PaaS
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Trigger backend deploy hook
+        if: ${{ secrets.RENDER_BACKEND_DEPLOY_HOOK != '' }}
+        run: curl -X POST "${{ secrets.RENDER_BACKEND_DEPLOY_HOOK }}"
+      - name: Trigger frontend deploy hook
+        if: ${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK != '' }}
+        run: curl -X POST "${{ secrets.RENDER_FRONTEND_DEPLOY_HOOK }}"

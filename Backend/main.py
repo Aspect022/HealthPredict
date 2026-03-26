@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from pydantic import BaseModel, EmailStr
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
+import logging
+import time
 from database import SessionLocal, engine
 from models import Base, User
 from utils import hash_password, verify_password
@@ -12,6 +14,7 @@ from schemas import (
     DepressionInput, HepatitisInput, HeartInput, KidneyInput
 )
 from predictor import DiseasePredictor
+from config import settings
 
 # External libs
 import fitz
@@ -22,20 +25,34 @@ Base.metadata.create_all(bind=engine)
 
 # Initialize app
 app = FastAPI(title="FastAPI Application")
+logger = logging.getLogger("healthpredict")
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s %(levelname)s %(name)s %(message)s",
+)
+metrics = {
+    "prediction_requests_total": 0,
+    "prediction_failures_total": 0,
+    "pdf_analysis_requests_total": 0,
+    "pdf_analysis_failures_total": 0,
+}
 
 # CORS config
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000"],  # Frontend URL
+    allow_origins=[origin.strip() for origin in settings.allowed_origins.split(",") if origin.strip()],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 # Configure Gemini AI
-API_KEY = "AIzaSyBHDQsHUazLBmYpqE28VZGS7LREHlenJ5o"
-genai.configure(api_key=API_KEY)
-model = genai.GenerativeModel(model_name="models/gemini-1.5-flash-latest")
+model = None
+if settings.gemini_api_key:
+    genai.configure(api_key=settings.gemini_api_key)
+    model = genai.GenerativeModel(model_name=settings.gemini_model_name)
+else:
+    logger.warning("GEMINI_API_KEY not configured; /analyze-pdf will be unavailable.")
 
 # Pydantic models
 class UserCreate(BaseModel):
@@ -95,19 +112,29 @@ disease_models = {
 
 @app.post("/predict/{disease_name}")
 async def predict_disease(disease_name: str, input_data: dict):
+    started_at = time.perf_counter()
+    metrics["prediction_requests_total"] += 1
     if disease_name not in disease_models:
         raise HTTPException(status_code=404, detail="Disease model not found")
     try:
         model_instance = disease_models[disease_name](**input_data)
         predictor = DiseasePredictor(disease_name, type(model_instance))
-        return predictor.predict(model_instance)
+        response = predictor.predict(model_instance)
+        elapsed_ms = round((time.perf_counter() - started_at) * 1000, 2)
+        logger.info("prediction_success disease=%s latency_ms=%s", disease_name, elapsed_ms)
+        return response
     except Exception as e:
+        metrics["prediction_failures_total"] += 1
+        logger.exception("prediction_failure disease=%s error=%s", disease_name, str(e))
         raise HTTPException(status_code=400, detail=f"Invalid input data: {e}")
 
 # PDF AI analysis endpoint
 @app.post("/analyze-pdf")
 async def analyze_pdf(file: UploadFile = File(...)):
+    metrics["pdf_analysis_requests_total"] += 1
     try:
+        if not model:
+            raise HTTPException(status_code=503, detail="Gemini is not configured.")
         pdf_bytes = await file.read()
         doc = fitz.open(stream=pdf_bytes, filetype="pdf")
         text = "".join(page.get_text() for page in doc)
@@ -122,12 +149,28 @@ async def analyze_pdf(file: UploadFile = File(...)):
         return {"analysis": response.text}
 
     except Exception as e:
+        metrics["pdf_analysis_failures_total"] += 1
+        logger.exception("pdf_analysis_failure error=%s", str(e))
         return JSONResponse(status_code=500, content={"detail": f"PDF analysis failed: {str(e)}"})
 
 # Health check
 @app.get("/")
 def root():
-    return {"message": "FastAPI is running"}
+    return {"message": "FastAPI is running", "environment": settings.app_env}
+
+
+@app.get("/health/ready")
+def readiness():
+    return {
+        "status": "ready",
+        "gemini_configured": bool(settings.gemini_api_key),
+        "environment": settings.app_env,
+    }
+
+
+@app.get("/metrics")
+def get_metrics():
+    return metrics
 
 # Uvicorn entry
 if __name__ == "__main__":

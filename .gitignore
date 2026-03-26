@@ -1,0 +1,25 @@
+# Python artifacts
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Environment files
+.env
+.env.*
+!.env.example
+
+# ML artifacts
+Backend/models/
+!Backend/models/
+!Backend/models/manifest.json
+Backend/data/
+Backend/mlruns/
+
+# DVC local cache
+.dvc/cache/
+
+# OS/editor
+.DS_Store
+Thumbs.db
