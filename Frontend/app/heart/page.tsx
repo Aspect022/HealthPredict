@@ -203,7 +203,7 @@ export default function HeartPage() {
       }
       console.log("Submitting form with data:", apiData)
   
-      const predictionResponse = await fetch("http://localhost:8000/predict/heart", {
+      const predictionResponse = await fetch("http://localhost:8000/api/v1/predict/heart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",

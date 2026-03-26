@@ -168,7 +168,7 @@ export default function StrokePage() {
         smoking_status: Number.parseInt(formData.smoking_status),
       }
 
-      const predictionResponse = await fetch("http://localhost:8000/predict/stroke", {
+      const predictionResponse = await fetch("http://localhost:8000/api/v1/predict/stroke", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
