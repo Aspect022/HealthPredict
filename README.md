@@ -6,6 +6,17 @@ HealthPredict is a full-stack healthcare risk prediction platform with:
 - MLOps baseline (MLflow + DVC + Prefect) for reproducible training, tracking, and model promotion.
 - DevOps baseline for CI, containerization, and PaaS deployment hooks.
 
+## Supported disease predictions
+The current application includes prediction flows for:
+- Diabetes
+- Heart disease
+- Kidney disease
+- Hepatitis
+- Depression
+- Parkinson's disease
+- Stroke
+- Thyroid disease
+
 ## Repository layout
 - `Backend/`: FastAPI API, ML inference, training and pipeline code.
 - `Frontend/`: Next.js UI and API routes.
